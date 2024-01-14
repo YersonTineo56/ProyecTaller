@@ -1,15 +1,21 @@
 package com.TallerYei.MicroserviciosHospedaje.controller;
 
-import com.TallerYei.MicroserviciosHospedaje.dto.ClienteDTO;
-import com.TallerYei.MicroserviciosHospedaje.model.Cliente;
-import com.TallerYei.MicroserviciosHospedaje.services.ClienteService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import com.TallerYei.MicroserviciosHospedaje.model.modelCliente;
+import com.TallerYei.MicroserviciosHospedaje.services.ClienteService;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -19,34 +25,42 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> obtenerTodosLosClientes() {
-        List<Cliente> clientes = clienteService.obtenerTodosLosClientes();
+    public ResponseEntity<List<modelCliente>> getAllClientes() {
+        List<modelCliente> clientes = clienteService.getAllClientes();
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtenerClientePorId(@PathVariable Long id) {
-        Optional<Cliente> cliente = clienteService.obtenerClientePorId(id);
-        return cliente.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<modelCliente> getClienteById(@PathVariable int id) {
+        modelCliente cliente = clienteService.getClienteById(id);
+
+        if (cliente != null) {
+            return new ResponseEntity<>(cliente, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Cliente> crearCliente(@RequestBody ClienteDTO nuevoClienteDTO) {
-        Cliente nuevoCliente = clienteService.crearCliente(nuevoClienteDTO);
-        return new ResponseEntity<>(nuevoCliente, HttpStatus.CREATED);
+    public ResponseEntity<modelCliente> createCliente(@RequestBody modelCliente nuevoCliente) {
+        modelCliente clienteCreado = clienteService.createCliente(nuevoCliente);
+        return new ResponseEntity<>(clienteCreado, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteActualizadoDTO) {
-        Optional<Cliente> clienteActualizado = clienteService.actualizarCliente(id, clienteActualizadoDTO);
-        return clienteActualizado.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<modelCliente> updateCliente(@PathVariable int id, @RequestBody modelCliente clienteActualizado) {
+        modelCliente cliente = clienteService.updateCliente(id, clienteActualizado);
+
+        if (cliente != null) {
+            return new ResponseEntity<>(cliente, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
+    public ResponseEntity<Void> deleteCliente(@PathVariable int id) {
+        clienteService.deleteCliente(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
