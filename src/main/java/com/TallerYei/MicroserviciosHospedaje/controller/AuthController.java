@@ -5,14 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+import com.TallerYei.MicroserviciosHospedaje.dto.ApiResponse;
 import com.TallerYei.MicroserviciosHospedaje.model.modelUsuario;
 import com.TallerYei.MicroserviciosHospedaje.services.AuthService;
 
@@ -20,41 +14,45 @@ import com.TallerYei.MicroserviciosHospedaje.services.AuthService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-  @Autowired
-    AuthService authService;
+    @Autowired
+    private AuthService authService;
+
+    // ... Otros métodos ...
 
     @GetMapping
-    public ResponseEntity<List<modelUsuario>> getAllUsers() {
-        List<modelUsuario> users = authService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-
-        
+    public ResponseEntity<ApiResponse<List<modelUsuario>>> getAllUsers() {
+        ApiResponse<List<modelUsuario>> response = authService.getAllUsers();
+        HttpStatus status = (response.getError() != null) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK;
+        return new ResponseEntity<>(response, status);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<modelUsuario> getUserById(@PathVariable int id) {
-        modelUsuario usuario = authService.getUserById(id);
-        if (usuario != null) {
-            return new ResponseEntity<>(usuario, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ApiResponse<modelUsuario>> getUserById(@PathVariable int id) {
+        ApiResponse<modelUsuario> response = authService.getUserById(id);
+        HttpStatus status = (response.getError() != null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+        return new ResponseEntity<>(response, status);
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<modelUsuario> createUser(@RequestBody modelUsuario nuevoUsuario) {
-        modelUsuario usuarioCreado = authService.createUser(nuevoUsuario);
-        return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<modelUsuario>> createUser(@RequestBody modelUsuario nuevoUsuario) {
+        ApiResponse<modelUsuario> response = authService.createUser(nuevoUsuario);
+        HttpStatus status = (response.getError() != null) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.CREATED;
+        return new ResponseEntity<>(response, status);
     }
 
-   
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<modelUsuario>> updateUser(@PathVariable int id, @RequestBody modelUsuario usuarioActualizado) {
+        ApiResponse<modelUsuario> response = authService.updateUser(id, usuarioActualizado);
+        HttpStatus status = (response.getError() != null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+        return new ResponseEntity<>(response, status);
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        authService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable int id) {
+        ApiResponse<Void> response = authService.deleteUser(id);
+        HttpStatus status = (response.getError() != null) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.NO_CONTENT;
+        return new ResponseEntity<>(response, status);
     }
 
+  
 }
-
-
-
