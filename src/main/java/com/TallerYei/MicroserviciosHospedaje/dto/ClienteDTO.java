@@ -5,20 +5,15 @@ import java.io.Serializable;
 public class ClienteDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private String nombre;
     private String apellido;
     private String direccion;
     private String telefono;
     private String correoElectronico;
 
-    // Constructores, getters y setters
-
-    // Constructor vacío necesario para Spring
     public ClienteDTO() {
     }
 
-    // Constructor con parámetros
     public ClienteDTO(String nombre, String apellido, String direccion, String telefono, String correoElectronico) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -26,8 +21,6 @@ public class ClienteDTO implements Serializable {
         this.telefono = telefono;
         this.correoElectronico = correoElectronico;
     }
-
-    // Getters y setters
 
     public String getNombre() {
         return nombre;
