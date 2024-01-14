@@ -1,48 +1,62 @@
 package com.TallerYei.MicroserviciosHospedaje.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.TallerYei.MicroserviciosHospedaje.model.modelCliente;
-import com.TallerYei.MicroserviciosHospedaje.repository.IClienteRepository;
+import com.TallerYei.MicroserviciosHospedaje.dto.ClienteDTO;
+import com.TallerYei.MicroserviciosHospedaje.model.Cliente;
+import com.TallerYei.MicroserviciosHospedaje.repository.ClienteRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClienteService {
 
     @Autowired
-    private IClienteRepository clienteRepository;
+    private ClienteRepository clienteRepository;
 
-    public List<modelCliente> getAllClientes() {
-        return (List<modelCliente>) clienteRepository.findAll();
+    public List<Cliente> obtenerTodosLosClientes() {
+        return (List<Cliente>) clienteRepository.findAll();
     }
 
-    public modelCliente getClienteById(int id) {
-        return clienteRepository.findById(id).orElse(null);
+    public Optional<Cliente> obtenerClientePorId(Long id) {
+        return clienteRepository.findById(id);
     }
 
-    public modelCliente createCliente(modelCliente nuevoCliente) {
+    public Cliente crearCliente(ClienteDTO nuevoClienteDTO) {
+        Cliente nuevoCliente = convertirDTOaEntidad(nuevoClienteDTO);
         return clienteRepository.save(nuevoCliente);
     }
 
-    public modelCliente updateCliente(int id, modelCliente clienteActualizado) {
-        modelCliente clienteExistente = clienteRepository.findById(id).orElse(null);
-
-        if (clienteExistente != null) {
-            clienteExistente.setNombre(clienteActualizado.getNombre());
-            clienteExistente.setApellido(clienteActualizado.getApellido());
-            clienteExistente.setDireccion(clienteActualizado.getDireccion());
-            clienteExistente.setTelefono(clienteActualizado.getTelefono());
-            clienteExistente.setCorreoElectronico(clienteActualizado.getCorreoElectronico());
-
-            return clienteRepository.save(clienteExistente);
-        } else {
-            return null; // Puedes manejar este caso según tus necesidades
-        }
+    public Optional<Cliente> actualizarCliente(Long id, ClienteDTO clienteActualizadoDTO) {
+        return clienteRepository.findById(id).map(cliente -> {
+            actualizarEntidadDesdeDTO(cliente, clienteActualizadoDTO);
+            return clienteRepository.save(cliente);
+        });
     }
 
-    public void deleteCliente(int id) {
+    public void eliminarCliente(Long id) {
         clienteRepository.deleteById(id);
+    }
+
+    private Cliente convertirDTOaEntidad(ClienteDTO clienteDTO) {
+        // Implementa la conversión según tus necesidades
+        return new Cliente(
+            clienteDTO.getNombre(),
+            clienteDTO.getApellido(),
+            clienteDTO.getDireccion(),
+            clienteDTO.getTelefono(),
+            clienteDTO.getCorreoElectronico()
+        );
+    }
+
+    private void actualizarEntidadDesdeDTO(Cliente cliente, ClienteDTO clienteDTO) {
+        // Implementa la actualización según tus necesidades
+        cliente.setNombre(clienteDTO.getNombre());
+        cliente.setApellido(clienteDTO.getApellido());
+        cliente.setDireccion(clienteDTO.getDireccion());
+        cliente.setTelefono(clienteDTO.getTelefono());
+        cliente.setCorreoElectronico(clienteDTO.getCorreoElectronico());
     }
 }
