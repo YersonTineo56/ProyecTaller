@@ -20,7 +20,7 @@ public class HabitacionService {
         try {
             return (List<Habitacion>) habitacionRepository.findAll();
         } catch (Exception e) {
-            // Log the exception or handle it according to your needs
+          
             throw new RuntimeException("Error al obtener todas las habitaciones", e);
         }
     }
@@ -39,7 +39,7 @@ public class HabitacionService {
             Habitacion nuevaHabitacion = convertirDTOaEntidad(nuevaHabitacionDTO);
             return habitacionRepository.save(nuevaHabitacion);
         } catch (Exception e) {
-            // Log the exception or handle it according to your needs
+          
             throw new RuntimeException("Error al crear la habitación", e);
         }
     }
@@ -51,10 +51,10 @@ public class HabitacionService {
                 return habitacionRepository.save(habitacion);
             });
         } catch (NotFoundException e) {
-            // NotFoundException is a custom exception (you can define your own)
+       
             throw e;
         } catch (Exception e) {
-            // Log the exception or handle it according to your needs
+          
             throw new RuntimeException("Error al actualizar la habitación", e);
         }
     }
@@ -63,7 +63,7 @@ public class HabitacionService {
         try {
             habitacionRepository.deleteById(id);
         } catch (Exception e) {
-            // Log the exception or handle it according to your needs
+      
             throw new RuntimeException("Error al eliminar la habitación con ID: " + id, e);
         }
     }
@@ -82,6 +82,6 @@ public class HabitacionService {
         habitacion.setTipoHabitacion(habitacionDTO.getTipoHabitacion());
         habitacion.setPrecio(habitacionDTO.getPrecio());
         habitacion.setEstado(habitacionDTO.getEstado());
-        // Puedes agregar más actualizaciones según tus necesidades
+        
     }
 }
