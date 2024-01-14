@@ -1,9 +1,11 @@
 package com.TallerYei.MicroserviciosHospedaje.repository;
 
-
-import com.TallerYei.MicroserviciosHospedaje.model.Cliente;
 import org.springframework.data.repository.CrudRepository;
 
-public interface IClienteRepository extends CrudRepository<Cliente, Long> {
-    // Puedes agregar consultas personalizadas si es necesario
+import com.TallerYei.MicroserviciosHospedaje.model.modelCliente;
+
+public interface IClienteRepository extends CrudRepository<modelCliente, Integer> {
+
+    // Puedes agregar métodos específicos de consulta si es necesario
+
 }
