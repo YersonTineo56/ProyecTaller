@@ -8,19 +8,30 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="usuarios")
+@Table(name = "usuario")
 public class modelUsuario {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idUSuario")
-    public int idUsuario;
+    @Column(name = "id_usuario")
+    private int idUsuario;
 
-    @Column(name="usuario")
-    public String usuario;
+    @Column(name = "usuario")
+    private String usuario;
 
-    @Column(name="clave")
-    public String clave;
+    @Column(name = "clave")
+    private String clave;
+
+    @Column(name = "nombre")
+    private String nombre;
+
+    @Column(name = "apellido")
+    private String apellido;
+
+    @Column(name = "correo")
+    private String correo;
+
+    // getters y setters
 
     public int getIdUsuario() {
         return idUsuario;
@@ -46,9 +57,27 @@ public class modelUsuario {
         this.clave = clave;
     }
 
-    
+    public String getNombre() {
+        return nombre;
+    }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
 }
-
-
