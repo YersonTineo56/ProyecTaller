@@ -1,60 +1,67 @@
 package com.TallerYei.MicroserviciosHospedaje.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.TallerYei.MicroserviciosHospedaje.dto.UsuarioDTO;
 import com.TallerYei.MicroserviciosHospedaje.model.modelUsuario;
-import com.TallerYei.MicroserviciosHospedaje.services.AuthService;
+import com.TallerYei.MicroserviciosHospedaje.services.AuthUsuarioService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-  @Autowired
-    AuthService authService;
+    private final AuthUsuarioService authUsuarioService;
 
-    @GetMapping
-    public ResponseEntity<List<modelUsuario>> getAllUsers() {
-        List<modelUsuario> users = authService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-
-        
+    public AuthController(AuthUsuarioService authUsuarioService) {
+        this.authUsuarioService = authUsuarioService;
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<modelUsuario> getUserById(@PathVariable int id) {
-        modelUsuario usuario = authService.getUserById(id);
-        if (usuario != null) {
-            return new ResponseEntity<>(usuario, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UsuarioDTO>> getAllUsers() {
+        List<modelUsuario> users = (List<modelUsuario>) authUsuarioService.getAllUsers();
+        List<UsuarioDTO> userDTOs = users.stream()
+                .map(user -> convertToDTO(user))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<modelUsuario> createUser(@RequestBody modelUsuario nuevoUsuario) {
-        modelUsuario usuarioCreado = authService.createUser(nuevoUsuario);
-        return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
+    public ResponseEntity<UsuarioDTO> createUser(@RequestBody UsuarioDTO usuarioDTO) {
+        modelUsuario nuevoUsuario = convertToEntity(usuarioDTO);
+        modelUsuario usuarioCreado = authUsuarioService.createUser(nuevoUsuario);
+        UsuarioDTO creadoDTO = convertToDTO(usuarioCreado);
+        return new ResponseEntity<>(creadoDTO, HttpStatus.CREATED);
     }
 
-   
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        authService.deleteUser(id);
+        authUsuarioService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // Métodos de conversión entre Entity y DTO
+    private UsuarioDTO convertToDTO(modelUsuario usuario) {
+        return new UsuarioDTO(
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getUsuario(),
+                usuario.getCorreo(),
+                usuario.getClave()
+        );
+    }
+
+    private modelUsuario convertToEntity(UsuarioDTO usuarioDTO) {
+        modelUsuario entity = new modelUsuario();
+        entity.setNombre(usuarioDTO.getNombre());
+        entity.setApellido(usuarioDTO.getApellido());
+        entity.setUsuario(usuarioDTO.getUsuario());
+        entity.setCorreo(usuarioDTO.getCorreo());
+        entity.setClave(usuarioDTO.getClave());
+        return entity;
+    }
 }
-
-
-
