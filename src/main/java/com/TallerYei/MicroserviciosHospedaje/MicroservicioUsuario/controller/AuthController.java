@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.TallerYei.MicroserviciosHospedaje.MicroservicioUsuario.dto.UsuarioDTO;
 import com.TallerYei.MicroserviciosHospedaje.MicroservicioUsuario.model.modelUsuario;
-import com.TallerYei.MicroserviciosHospedaje.MicroservicioUsuario.services.AuthUsuarioService;
+import com.TallerYei.MicroserviciosHospedaje.MicroservicioUsuario.service.AuthUsuarioService;
 
 import java.util.List;
 import java.util.stream.Collectors;
