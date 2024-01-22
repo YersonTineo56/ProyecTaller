@@ -1,12 +1,4 @@
-package com.TallerYei.MicroserviciosHospedaje.MicroservicioHabitacion.controller;
-
-import com.TallerYei.MicroserviciosHospedaje.MicroservicioHabitacion.dto.HabitacionDTO;
-import com.TallerYei.MicroserviciosHospedaje.MicroservicioHabitacion.services.HabitacionService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+package MsHabitacion.MsHabitacion.controller;
 
 @RestController
 @RequestMapping("/api/habitacion")
